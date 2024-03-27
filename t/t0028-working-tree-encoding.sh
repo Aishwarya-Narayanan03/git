@@ -19,10 +19,13 @@ test_expect_success 'setup test files' '
 	echo "*.utf16 text working-tree-encoding=utf-16" >.gitattributes &&
 	echo "*.utf16lebom text working-tree-encoding=UTF-16LE-BOM" >>.gitattributes &&
 	printf "$text" >test.utf8.raw &&
-	printf "$text" | write_utf16 >test.utf16.raw &&
-	printf "$text" | write_utf32 >test.utf32.raw &&
-	printf "\377\376"                         >test.utf16lebom.raw &&
-	printf "$text" | iconv -f UTF-8 -t UTF-16LE >>test.utf16lebom.raw &&
+	test_utf16_raw=$(printf "$text" | write_utf16) &&
+	test_utf32_raw=$(printf "$text" | write_utf32) &&
+	test_utf16lebom_raw=$(printf "\377\376"; printf "$text" | iconv -f UTF-8 -t UTF-16LE) &&
+	echo "$test_utf16_raw" > test.utf16.raw &&
+	echo "$test_utf32_raw" > test.utf32.raw &&
+	echo "$test_utf16lebom_raw" > test.utf16lebom.raw &&
+
 
 	# Line ending tests
 	printf "one\ntwo\nthree\n" >lf.utf8.raw &&
