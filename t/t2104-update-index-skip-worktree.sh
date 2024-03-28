@@ -2,6 +2,33 @@
 #
 # Copyright (c) 2008 Nguyễn Thái Ngọc Duy
 #
+test_description='skip-worktree bit test'	
+
+TEST_PASSES_SANITIZE_LEAK=true	
+. ./test-lib.sh	
+
+sane_unset GIT_TEST_SPLIT_INDEX	
+
+test_set_index_version () {	
+    GIT_INDEX_VERSION="$1"	
+    export GIT_INDEX_VERSION	
+}	
+
+test_set_index_version 3	
+
+cat >expect.full <<EOF	
+H 1	
+H 2	
+H sub/1	
+H sub/2	
+EOF	
+
+cat >expect.skip <<EOF	
+S 1	
+H 2	
+S sub/1	
+H sub/2	
+EOF	
 
 test_expect_success 'setup' '
 	mkdir sub &&
